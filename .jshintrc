@@ -1,0 +1,15 @@
+{
+  "esnext": true,
+  "unused": true,
+  "globalstrict": true,
+  "predef": [
+    "console",
+    "module",
+    "__dirname",
+    "__filename",
+    "require",
+    "process",
+    "global",
+    "setTimeout"
+  ]
+}

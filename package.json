@@ -1,0 +1,24 @@
+{
+  "name": "flapjacks",
+  "version": "0.0.1",
+  "description": "Layered config for giants with axes",
+  "homepage": "https://github.com/evs-chris/node-flapjacks",
+  "license": "MIT",
+  "author": { "name": "Chris Reeves" },
+  "main": "index.js",
+  "repository": { "type": "git", "url": "https://github.com/evs-chris/node-flapjacks.git" },
+    "files": [ "package.json", "index.js", "LICENSE.md" ],
+    "engines": {
+      "node": ">=0.10.0"
+    },
+    "dependencies": {
+    },
+    "devDependencies": {
+      "mocha": "^1",
+      "should": "^4"
+    },
+    "scripts": {
+      "test": "node_modules/.bin/mocha --reporter spec test.js",
+      "console": "node"
+    }
+}
