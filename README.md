@@ -69,7 +69,7 @@ get(path[, [default`]);
 
 `get` traverses to the given path and returns any value found there. This can be used to return intermediate objects branches as well as value leaves. If an intermiediate does not exist, the optional `default` (otherwise `undefined`) will be returned instead.
 
-### push, pop, slice, shift, unshift
+### push, pop, splice, shift, unshift
 
 ```js
 push(path, value...);
