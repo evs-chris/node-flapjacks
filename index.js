@@ -39,7 +39,7 @@ var proto = {
     } else {
       path = path.split('.');
       var c = this;
-      for (var i = 0; i < path.length - i; i++) {
+      for (var i = 0; i < path.length - 1; i++) {
         if (!c[path[i]]) {
           c = c[path[i]] = {};
         } else c = c[path[i]];
