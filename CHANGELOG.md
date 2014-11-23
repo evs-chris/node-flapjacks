@@ -1,7 +1,7 @@
-## 0.1.0
+## 0.0.2
 
-* Adds oddly missing info log level.
+* *BUG:* Fixes issue with multiplication of path nesting.
 
 ## 0.0.1
 
-Initial version supporting inherited configuration, custom levels, namespaces, multiple outputs, and optional globalization.
+Initial version
