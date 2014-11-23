@@ -13,4 +13,9 @@ describe('flapjack config', function() {
     var c = mod.literal("config.set('foo.bar', 1);");
     c.foo.bar.should.equal(1);
   });
+
+  it('should be able to set non-nested keys', function() {
+    var c = mod.literal("config.set('port', 2121);");
+    c.port.should.equal(2121);
+  });
 });
