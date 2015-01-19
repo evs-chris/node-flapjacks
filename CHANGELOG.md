@@ -1,3 +1,7 @@
+## 0.0.3
+
+* __BUG:__ Fixes issue with reading module path.
+
 ## 0.0.2
 
 * *BUG:* Fixes issue with multiplication of path nesting.
