@@ -96,7 +96,7 @@ function read() {
   var main = (function() {
     var m = module;
     while (m.parent) m = m.parent;
-    var p = path.dirname(m.file);
+    var p = path.dirname(m.filename);
     var name;
 
     while (p.length > 0 && !name) {
