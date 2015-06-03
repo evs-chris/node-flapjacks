@@ -18,4 +18,10 @@ describe('flapjack config', function() {
     var c = mod.literal("config.set('port', 2121);");
     c.port.should.equal(2121);
   });
+
+  it('should be able to merge objects', function() {
+    var c = mod.literal("config.set('foo.bar', { baz: { bar: true } }); config.merge('foo.bar.baz', { bop: false });");
+    c.foo.bar.baz.bop.should.equal(false);
+    c.foo.bar.baz.bar.should.equal(true);
+  });
 });

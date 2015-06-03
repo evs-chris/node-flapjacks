@@ -47,6 +47,17 @@ var proto = {
       c[path[path.length - 1]] = value;
     }
   },
+  merge: function(path, value, noOver) {
+    if (typeof path !== 'string' && arguments.length === 1) {
+      for (var k in path) {
+        if (path.hasOwnProperty(k)) this.merge(k, path[k]);
+      }
+    } else {
+      var target = this.get(path, {});
+      assignMerge(target, value, noOver);
+      this.set(path, target);
+    }
+  },
   push: function(path) {
     var arr = this.get(path);
     var args = slice(arguments, 1);
@@ -91,6 +102,31 @@ var proto = {
     else throw new Error(notAnArray);
   }
 };
+
+function assign(target, source, noOver) {
+  for (var k in source) {
+    if (!noOver || (noOver && !target.hasOwnProperty(k))) {
+      target[k] = source[k];
+    }
+  }
+}
+
+function assignMerge(target, source, noOver) {
+  for (var k in source) {
+    if (target[k] === undefined) target[k] = source[k];
+    else if (typeof target[k] === 'object' && typeof source[k] === 'object') {
+      assignMerge(target[k], source[k], noOver);
+    } else target[k] = source[k];
+  }
+}
+
+function objectAtPath(target, path) {
+  path = path.split('.');
+  var key;
+  for (var i = 0; i < path.length; i++) {
+
+  }
+}
 
 function read() {
   var main = (function() {
@@ -148,7 +184,7 @@ function readConfig(str, out, file) {
   try {
     /* jshint evil: true */
     var fn = new Function('config', str);
-    fn(res);
+    fn.call(res, res);
   } catch (e) {
     log.error('Failed on ' + (file || '<literal>'), e);
   }
