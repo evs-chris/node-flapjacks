@@ -159,8 +159,8 @@ function read(name) {
   var host = require('os').hostname().replace(/([^\.]*).*/, '$1');
 
   var files = (function() {
-    var roots = [process.cwd() + '/', path.join(process.cwd(), 'config') + '/' + main + '.', path.join(home, '.config', main) + '/', path.join(home, '.' + main) + '/', home + '.' + main + '.'];
-    var files = ['default', user, host, env, host + '.' + env, user + '.' + env, user + '.' + host, user + '.' + host + '.' + env].reduce(function(a, c) { a.push(s + '.json', s + '.config.json', s + '.rjson', s + '.config.rjson', s + '.js', s + '.config.js', s + '.config'); return a; }, []);
+    var roots = [process.cwd() + '/', path.join(process.cwd(), 'config') + '/' + main + '.', path.join(home, '.config', main) + '/', path.join(home, '.' + main) + '/', home + '/.' + main + '.'];
+    var files = ['', 'default', user, host, env, host + '.' + env, user + '.' + env, user + '.' + host, user + '.' + host + '.' + env].reduce(function(a, c) { c = c.length > 0 ? c + '.' : c; a.push(c + 'json', c + 'config.json', c + 'rjson', c + 'config.rjson', c + 'js', c + 'config.js', c + 'config'); return a; }, []);
     var res = [];
     for (var r = 0; r < roots.length; r++) {
       for (var i = 0; i < files.length; i++) {
@@ -176,8 +176,11 @@ function read(name) {
 
   log.info('Loading configuration from ' + files.length + ' files in order\n' + files.join('\n'));
 
+  var type;
   for (var i = 0; i < files.length; i++) {
-    readConfig(fs.readFileSync(files[i]), res, files[i], path.extname(files[i]).toLowerCase());
+    type = path.extname(files[i]).toLowerCase();
+    if (type === '') type = path.basename(files[i]);
+    readConfig(fs.readFileSync(files[i]).toString('utf8'), res, files[i], type);
   }
 
   return res;
@@ -192,7 +195,7 @@ function readConfig(str, out, file, type) {
     } else if (type === 'rjson') {
       str = str.replace(/\{/, 'return {');
       fn = new Function(str);
-      res.set('', fn());
+      res.set('', fn() || {});
     } else {
       /* jshint evil: true */
       fn = new Function('config', str);
@@ -200,6 +203,7 @@ function readConfig(str, out, file, type) {
     }
   } catch (e) {
     log.error('Failed on ' + (file || '<literal>'), e);
+    log.trace(str);
   }
 
   return res;
