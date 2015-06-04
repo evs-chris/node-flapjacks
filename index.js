@@ -133,8 +133,8 @@ function objectAtPath(target, path) {
   }
 }
 
-function read() {
-  var main = (function() {
+function read(name) {
+  var main = name || (function() {
     var m = module;
     while (m.parent) m = m.parent;
     var p = path.dirname(m.filename);
@@ -159,12 +159,12 @@ function read() {
   var host = require('os').hostname().replace(/([^\.]*).*/, '$1');
 
   var files = (function() {
-    var roots = [process.cwd(), path.join(process.cwd(), 'config'), path.join(home, '.config', main), path.join(home, '.' + main)];
+    var roots = [process.cwd() + '/', path.join(process.cwd(), 'config') + '/' + main + '.', path.join(home, '.config', main) + '/', path.join(home, '.' + main) + '/', home + '.' + main + '.'];
     var files = ['default', user, host, env, host + '.' + env, user + '.' + env, user + '.' + host, user + '.' + host + '.' + env].reduce(function(a, c) { a.push(s + '.json', s + '.config.json', s + '.rjson', s + '.config.rjson', s + '.js', s + '.config.js', s + '.config'); return a; }, []);
     var res = [];
     for (var r = 0; r < roots.length; r++) {
       for (var i = 0; i < files.length; i++) {
-        var tmp = path.join(roots[r], files[i]);
+        var tmp = roots[r] + files[i];
         if (fs.existsSync(tmp)) res.push(tmp);
         else log.trace('not found: ' + tmp);
       }
@@ -210,10 +210,10 @@ var out = module.exports = {};
 
 out.config = res;
 
-out.read = function() {
+out.read = function(name) {
   if (!current) {
     current = true;
-    out.config = res = read();
+    out.config = res = read(name);
   }
   return res;
 };
