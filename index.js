@@ -178,7 +178,7 @@ function read(name) {
 
   var type;
   for (var i = 0; i < files.length; i++) {
-    type = path.extname(files[i]).toLowerCase();
+    type = path.extname(files[i]).toLowerCase().substr(1);
     if (type === '') type = path.basename(files[i]);
     readConfig(fs.readFileSync(files[i]).toString('utf8'), res, files[i], type);
   }
