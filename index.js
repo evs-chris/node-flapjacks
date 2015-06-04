@@ -26,6 +26,7 @@ var proto = {
   get: function(path, value) {
     path = path.split('.');
     var c = this;
+    if (path.length === 1 && path[0] === '') return c || value;
     for (var i = 0; c && i < path.length; i++) {
       c = c[path[i]];
     }
@@ -39,6 +40,10 @@ var proto = {
     } else {
       path = path.split('.');
       var c = this;
+      if (path.length === 1 && path[0] === '') {
+        this.merge('', value);
+        return;
+      }
       for (var i = 0; i < path.length - 1; i++) {
         if (!c[path[i]]) {
           c = c[path[i]] = {};
@@ -53,9 +58,9 @@ var proto = {
         if (path.hasOwnProperty(k)) this.merge(k, path[k]);
       }
     } else {
-      var target = this.get(path, {});
-      assignMerge(target, value, noOver);
-      this.set(path, target);
+      var target = this.get(path), out = target || {};
+      assignMerge(out, value, noOver);
+      if (!target) this.set(path, out);
     }
   },
   push: function(path) {
@@ -155,7 +160,7 @@ function read() {
 
   var files = (function() {
     var roots = [process.cwd(), path.join(process.cwd(), 'config'), path.join(home, '.config', main), path.join(home, '.' + main)];
-    var files = ['default', user, host, env, host + '.' + env, user + '.' + env, user + '.' + host, user + '.' + host + '.' + env].map(function(s) { return s + '.config.js'; });
+    var files = ['default', user, host, env, host + '.' + env, user + '.' + env, user + '.' + host, user + '.' + host + '.' + env].reduce(function(a, c) { a.push(s + '.json', s + '.config.json', s + '.rjson', s + '.config.rjson', s + '.js', s + '.config.js', s + '.config'); return a; }, []);
     var res = [];
     for (var r = 0; r < roots.length; r++) {
       for (var i = 0; i < files.length; i++) {
@@ -172,19 +177,27 @@ function read() {
   log.info('Loading configuration from ' + files.length + ' files in order\n' + files.join('\n'));
 
   for (var i = 0; i < files.length; i++) {
-    readConfig(fs.readFileSync(files[i]), res, files[i]);
+    readConfig(fs.readFileSync(files[i]), res, files[i], path.extname(files[i]).toLowerCase());
   }
 
   return res;
 }
 
-function readConfig(str, out, file) {
-  var res = out || Object.create(proto);
+function readConfig(str, out, file, type) {
+  var res = out || Object.create(proto), fn;
 
   try {
-    /* jshint evil: true */
-    var fn = new Function('config', str);
-    fn.call(res, res);
+    if (type === 'json') {
+      res.set('', JSON.parse(str));
+    } else if (type === 'rjson') {
+      str = str.replace(/\{/, 'return {');
+      fn = new Function(str);
+      res.set('', fn());
+    } else {
+      /* jshint evil: true */
+      fn = new Function('config', str);
+      fn.call(res, res);
+    }
   } catch (e) {
     log.error('Failed on ' + (file || '<literal>'), e);
   }
@@ -210,9 +223,9 @@ out.reread = function() {
   return out.read();
 };
 
-out.literal = function(str) {
+out.literal = function(str, type) {
   current = true;
-  out.config = res = readConfig(str);
+  out.config = res = readConfig(str, null, null, type);
   return res;
 };
 
