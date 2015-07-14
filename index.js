@@ -4,7 +4,7 @@ var fs = require('fs');
 var path = require('path');
 var log = (function() {
   try {
-    return require('blue-ox')('flapjacks');
+    return require('blue-ox')('flapjacks', 'info');
   } catch (e) {
     return { error: function(v) { console.log(v); }, info: function() {}, trace: function() {} };
   }
@@ -26,11 +26,11 @@ var proto = {
   get: function(path, value) {
     path = path.split('.');
     var c = this;
-    if (path.length === 1 && path[0] === '') return c || value;
+    if (path.length === 1 && path[0] === '') return c !== undefined ? c : value;
     for (var i = 0; c && i < path.length; i++) {
       c = c[path[i]];
     }
-    return c || value;
+    return c !== undefined ? c : value;
   },
   set: function(path, value) {
     if (typeof path !== 'string' && arguments.length === 1) {
@@ -108,14 +108,13 @@ var proto = {
   }
 };
 
-function assign(target, source, noOver) {
+function assign(target, source, noOver) { // jshint ignore: line
   for (var k in source) {
     if (!noOver || (noOver && !target.hasOwnProperty(k))) {
       target[k] = source[k];
     }
   }
 }
-
 function assignMerge(target, source, noOver) {
   for (var k in source) {
     if (target[k] === undefined) target[k] = source[k];
@@ -125,16 +124,9 @@ function assignMerge(target, source, noOver) {
   }
 }
 
-function objectAtPath(target, path) {
-  path = path.split('.');
-  var key;
-  for (var i = 0; i < path.length; i++) {
-
-  }
-}
-
-function read(name) {
-  var main = name || (function() {
+function read(opts) {
+  opts = opts || {};
+  var main = process.env.FLAPJACK_NAME || opts.name || (function() {
     var m = module;
     while (m.parent) m = m.parent;
     var p = path.dirname(m.filename);
@@ -159,8 +151,22 @@ function read(name) {
   var host = require('os').hostname().replace(/([^\.]*).*/, '$1');
 
   var files = (function() {
-    var roots = [process.cwd() + '/', path.join(process.cwd(), 'config') + '/' + main + '.', path.join(home, '.config', main) + '/', path.join(home, '.' + main) + '/', home + '/.' + main + '.'];
-    var files = ['', 'default', user, host, env, host + '.' + env, user + '.' + env, user + '.' + host, user + '.' + host + '.' + env].reduce(function(a, c) { c = c.length > 0 ? c + '.' : c; a.push(c + 'json', c + 'config.json', c + 'rjson', c + 'config.rjson', c + 'js', c + 'config.js', c + 'config'); return a; }, []);
+    var roots = [];
+    if (opts.skipAllRoots !== true) {
+      if (opts.skipRootCWD !== true) roots.push(process.cwd() + '/');
+      if (opts.skipRootCWDConfig !== true) roots.push(path.join(process.cwd(), 'config') + '/' + main + '.');
+      if (opts.skipRootConfig !== true) roots.push(path.join(home, '.config', main) + '/');
+      if (opts.skipRootHomeModule !== true) roots.push(path.join(home, '.' + main) + '/');
+      if (opts.skipRootHome !== true) roots.push(home + '/.' + main + '.');
+    }
+    if (Array.isArray(opts.roots)) roots = roots.concat(opts.roots);
+
+    var types = [];
+    if (opts.skipTypeJSON !== true) types.push('json', 'config.json');
+    if (opts.skipTypeRJSON !== true) types.push('rjson', 'config.rjson');
+    if (opts.skipTypeScript !== true) types.push('js', 'config.js', 'config');
+
+    var files = ['', 'default', user, host, env, host + '.' + env, user + '.' + env, user + '.' + host, user + '.' + host + '.' + env].reduce(function(a, c) { c = c.length > 0 ? c + '.' : c; a.push.apply(a, types.map(function(t) { return c + t; })); return a; }, []);
     var res = [];
     for (var r = 0; r < roots.length; r++) {
       for (var i = 0; i < files.length; i++) {
@@ -194,6 +200,7 @@ function readConfig(str, out, file, type) {
       res.set('', JSON.parse(str));
     } else if (type === 'rjson') {
       str = str.replace(/\{/, 'return {');
+      /* jshint evil: true */
       fn = new Function(str);
       res.set('', fn() || {});
     } else {

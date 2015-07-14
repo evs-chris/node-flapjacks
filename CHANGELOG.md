@@ -1,3 +1,9 @@
+## 0.2.0
+
+* Paths can now be optionally excluded when searching for config files. A list of additional paths can also be supplied.
+* Types can now be optionally skipped.
+* __BUG:__ Fixes bug with `get`ing a value that is `false`, `null`, `''`, or `0`.
+
 ## 0.1.0
 
 * Adds support for merging objects into the config.

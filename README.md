@@ -21,7 +21,7 @@ if (config.foo) {
 
 ## Paths
 
-flapjacks looks for files based on `process.NODE_ENV`, current user, host name, and main module name. It looks in `.`, `./config/`, `~/.$module/`, and `~/.config/$module/`, where `$module` is the main module. So if the main module is `MyNodeThing`, the paths would be `~/.config/MyNodeThing/` and `~/.MyNodeThing/`. You can also specify a name as the only parameter to the `read` function.
+flapjacks looks for files based on `process.NODE_ENV`, current user, host name, and main module name. It looks in `.`, `./config/`, `~/.$module/`, and `~/.config/$module/`, where `$module` is the main module. So if the main module is `MyNodeThing`, the paths would be `~/.config/MyNodeThing/` and `~/.MyNodeThing/`. You can specify the main module name with the environment variable `FLAPJACK_NAME`. You can also specify a name in the options parameter of the `read` function, otherwise, it will be the name from the first `package.json` found from the working directory up.
 
 The files are loaded in order from least to most specific:
 
@@ -87,9 +87,14 @@ JSON files are parsed with `JSON.parse` and the result is merged into the root o
 
 ## API
 
-### `read([name])`
+### `read([options])`
 
-Read config files for the module named `name` or the main module name for this process if `name` was not specified. The configuration will be cached, so subsequent calls to `read` will yield the cached result.
+`options` should be an object with any of the following keys:
+* `name` - Read config files for the module named `name` or the main module name for this process if `name` was not specified. The configuration will be cached, so subsequent calls to `read` will yield the cached result.
+* `skipRoot[root]` - where `root` is one of `CWD`, `CWDConfig`, `Config`, `HomeModule`, or `Home` - don't look in the named path for config files
+* `skipAllRoots` - don't look in any of the default paths for config files
+* `roots` - an array of additional root paths to search for config files
+* `skipType[type]` - where `type` is one of `JSON`, `RJSON`, or `Script` - don't look for config files of the given type. This is handy to set `JSON` as the only type of file parsed in case you don't want any eval'ed config code.
 
 ### `reread()`
 
