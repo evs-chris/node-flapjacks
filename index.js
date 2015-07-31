@@ -171,7 +171,9 @@ function read(opts) {
     for (var r = 0; r < roots.length; r++) {
       for (var i = 0; i < files.length; i++) {
         var tmp = roots[r] + files[i];
-        if (fs.existsSync(tmp)) res.push(tmp);
+        var st;
+        try { st = fs.statSync(tmp); } catch (e) {}
+        if (st && !st.isDirectory()) res.push(tmp);
         else log.trace('not found: ' + tmp);
       }
     }
