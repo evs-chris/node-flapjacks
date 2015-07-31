@@ -1,3 +1,7 @@
+## 0.2.1
+
+* __BUG:__ Make sure found config files aren't actually directories.
+
 ## 0.2.0
 
 * Paths can now be optionally excluded when searching for config files. A list of additional paths can also be supplied.
