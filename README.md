@@ -37,7 +37,7 @@ The files are loaded in order from least to most specific:
 
 with extensions applied as such:
 
-* `.json'
+* `.json`
 * `.config.json`
 * `.rjson`
 * `.config.rjson`
