@@ -1,3 +1,7 @@
+## 0.2.2
+
+* __BUG:__ JavaScript scoping strikes again.
+
 ## 0.2.1
 
 * __BUG:__ Make sure found config files aren't actually directories.

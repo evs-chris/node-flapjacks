@@ -1,6 +1,6 @@
 {
   "name": "flapjacks",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "Layered config for giants with axes",
   "homepage": "https://github.com/evs-chris/node-flapjacks",
   "license": "MIT",
