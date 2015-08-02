@@ -32,6 +32,16 @@ var proto = {
     }
     return c !== undefined ? c : value;
   },
+  has: function(path) {
+    path = path.split('.');
+    var c = this;
+    if (path.length === 1 && path[0] === '') return c !== undefined;
+    for (var i = 0; c && i < path.length; i++) {
+      if (!(path[i] in c)) return false;
+      c = c[path[i]];
+    }
+    return !!c;
+  },
   set: function(path, value) {
     if (typeof path !== 'string' && arguments.length === 1) {
       for (var k in path) {
@@ -51,6 +61,9 @@ var proto = {
       }
       c[path[path.length - 1]] = value;
     }
+  },
+  ensure: function(path, value) {
+    if (!this.has(path)) this.set(path, value);
   },
   merge: function(path, value, noOver) {
     if (typeof path !== 'string' && arguments.length === 1) {

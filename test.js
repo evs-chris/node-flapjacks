@@ -47,4 +47,18 @@ describe('flapjack config', function() {
     c.bop().should.equal('boop');
     c.foo.should.equal('bar');
   });
+
+  it('should let you easily check path existence', function() {
+    var c = mod.literal("config.set('base', { foo: { bar: { baz: 'yep' } } });");
+    c.has('base.foo.bar.baz').should.equal(true);
+    c.has('base.bop.bippy').should.equal(false);
+  });
+
+  it('should allow easily ensuring a default key value', function() {
+    var c = mod.literal("config.set('base', { foo: { bar: { baz: 'yep' } } });");
+    c.ensure('base.foo.bar.baz', 'boggle');
+    c.ensure('base.bop.bippy', 'bonk');
+    c.get('base.foo.bar.baz').should.equal('yep');
+    c.get('base.bop.bippy').should.equal('bonk');
+  });
 });
