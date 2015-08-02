@@ -1,3 +1,8 @@
+## 0.3.0
+
+* Adds support for checking if a key has a value with `has`.
+* Adds support for ensureing that a key has a value with `ensure`.
+
 ## 0.2.2
 
 * __BUG:__ JavaScript scoping strikes again.

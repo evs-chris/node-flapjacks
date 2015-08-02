@@ -128,7 +128,7 @@ When called with a path and value, the value at path will become `value`. If the
 
 When called with a settings object, each key/value pair will be handled as if it was passed to `set(key, value)`.
 
-When called with an empty path, the `value` will be merged into the root config.
+When called with an empty path `''`, the `value` will be merged into the root config.
 
 ### merge
 ```js
@@ -139,12 +139,26 @@ Merge the object `value` into the given `path`. This is useful for adding settin
 
 ### get
 ```js
-get(path[, [default`]);
+get(path[, default]);
 ```
 
 `get` traverses to the given path and returns any value found there. This can be used to return intermediate objects branches as well as value leaves. If an intermiediate does not exist, the optional `default` (otherwise `undefined`) will be returned instead.
 
 When called with an empty path `''`, the config object is returned.
+
+### has
+```js
+has(path);
+```
+
+`has` traverses to the given path and returns true if there is a value (even if that value is specifically set to `undefined`). If there is no value at any point in the path, `has` will return false.
+
+### ensure
+```js
+ensure(path, value);
+```
+
+`ensure` traverses to the given path, and if it, or any intermediate levels, do not have a value set, then the given value will be set for the path.
 
 ### push, pop, splice, shift, unshift
 
