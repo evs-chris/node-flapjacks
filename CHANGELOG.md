@@ -1,3 +1,7 @@
+## 0.3.1
+
+* __BUG:__ Make sure `ensure` doesn't overwrite defined but falsey values.
+
 ## 0.3.0
 
 * Adds support for checking if a key has a value with `has`.
