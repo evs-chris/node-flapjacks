@@ -40,7 +40,7 @@ var proto = {
       if (!(path[i] in c)) return false;
       c = c[path[i]];
     }
-    return !!c;
+    return c !== undefined;
   },
   set: function(path, value) {
     if (typeof path !== 'string' && arguments.length === 1) {

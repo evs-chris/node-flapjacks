@@ -55,10 +55,12 @@ describe('flapjack config', function() {
   });
 
   it('should allow easily ensuring a default key value', function() {
-    var c = mod.literal("config.set('base', { foo: { bar: { baz: 'yep' } } });");
+    var c = mod.literal("config.set('base', { foo: { bar: { baz: 'yep' } }, oop: '' });");
     c.ensure('base.foo.bar.baz', 'boggle');
     c.ensure('base.bop.bippy', 'bonk');
+    c.ensure('base.oop', 'nope');
     c.get('base.foo.bar.baz').should.equal('yep');
     c.get('base.bop.bippy').should.equal('bonk');
+    c.get('base.oop').should.equal('');
   });
 });
