@@ -1,3 +1,7 @@
+## 0.3.2
+
+* __BUG:__ Pass `reread` argument to `read`.
+
 ## 0.3.1
 
 * __BUG:__ Make sure `ensure` doesn't overwrite defined but falsey values.

@@ -96,9 +96,9 @@ JSON files are parsed with `JSON.parse` and the result is merged into the root o
 * `roots` - an array of additional root paths to search for config files
 * `skipType[type]` - where `type` is one of `JSON`, `RJSON`, or `Script` - don't look for config files of the given type. This is handy to set `JSON` as the only type of file parsed in case you don't want any eval'ed config code.
 
-### `reread()`
+### `reread([options])`
 
-Throws away any cached config and reads the config files again.
+Throws away any cached config and reads the config files again with the given options.
 
 ### `literal(content[, type])`
 

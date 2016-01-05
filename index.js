@@ -244,9 +244,9 @@ out.read = function(name) {
   return res;
 };
 
-out.reread = function() {
+out.reread = function(name) {
   current = false;
-  return out.read();
+  return out.read(name);
 };
 
 out.literal = function(str, type) {
